@@ -89,3 +89,33 @@ with open("astar_logs.json", "w") as f:
 
 print("Experiment completed")
 print("Successful runs:", sum(l["success"] for l in logs))
+
+import matplotlib.pyplot as plt
+
+# Visualization of last run
+if path:
+    fig, ax = plt.subplots(figsize=(7,7))
+
+    for i in range(GRID_SIZE):
+        for j in range(GRID_SIZE):
+            if grid[i, j] == 1:
+                ax.add_patch(plt.Rectangle((j, i), 1, 1, color="black"))
+            else:
+                ax.add_patch(plt.Rectangle((j, i), 1, 1, fill=False, edgecolor="gray"))
+
+    for x, y in explored:
+        ax.add_patch(plt.Rectangle((y, x), 1, 1, color="lightblue", alpha=0.5))
+
+    px = [p[1] + 0.5 for p in path]
+    py = [p[0] + 0.5 for p in path]
+    ax.plot(px, py, color="red", linewidth=2)
+
+    ax.text(START[1]+0.3, START[0]+0.7, "S")
+    ax.text(GOAL[1]+0.3, GOAL[0]+0.7, "G")
+
+    ax.set_xlim(0, GRID_SIZE)
+    ax.set_ylim(GRID_SIZE, 0)
+    ax.set_aspect("equal")
+
+    plt.title("A* Path Planning")
+    plt.show()
