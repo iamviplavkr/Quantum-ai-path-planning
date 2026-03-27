@@ -88,11 +88,15 @@ The system provides graphical output showing:
 
 ## 📁 Project Structure
 
-    classical/
+    classical/                 # Classical A* module
         astar.py
+        README.md
+        sample_output.png
 
-    quantum/
+    quantum/                  # Quantum-inspired module
         quantum_path.py
+        README.md
+        sample_output_quantum.png
 
 ---
 
