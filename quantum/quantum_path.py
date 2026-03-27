@@ -1,8 +1,11 @@
 import numpy as np
 import random
+import json
+import matplotlib.pyplot as plt
 
 from qiskit import QuantumCircuit, transpile
 from qiskit_aer import AerSimulator
+from google.colab import files
 
 
 # PARAMETERS
@@ -111,5 +114,48 @@ def quantum_path(grid,start,goal):
 
     if current != goal:
         return [], explored
+
+import json
+
+# PARAMETERS
+OBSTACLE_PROB = 0.15
+NUM_RUNS = 30
+
+random.seed(3)
+np.random.seed(3)
+
+
+logs = []
+
+for run in range(NUM_RUNS):
+
+    grid = np.zeros((GRID_SIZE,GRID_SIZE))
+
+    for i in range(GRID_SIZE):
+        for j in range(GRID_SIZE):
+            if random.random() < OBSTACLE_PROB:
+                grid[i,j] = 1
+
+    grid[START] = 0
+    grid[GOAL] = 0
+
+    path, explored = quantum_path(grid,START,GOAL)
+
+    log_entry = {
+        "run_id": run,
+        "quantum_success": bool(path),
+        "quantum_path_length": len(path)-1 if path else None,
+        "quantum_explored_nodes": len(explored)
+    }
+
+    logs.append(log_entry)
+
+
+with open("quantum_path_logs.json","w") as f:
+    json.dump(logs,f,indent=2)
+
+print("Quantum experiment completed")
+print("Total runs:", NUM_RUNS)
+print("Successful runs:", sum(l["quantum_success"] for l in logs))    
 
     return path, explored
