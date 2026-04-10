@@ -25,12 +25,18 @@ def neighbors(node, grid):
                 yield (nx, ny)
 
 def a_star(grid, start, goal):
+
+    if start == goal:
+        return [start], []
+
     open_set = []
     heapq.heappush(open_set, (0, start))
 
     came_from = {}
     g = {start: 0}
     explored = []
+
+    rows, cols = grid.shape   # ✅ FIX
 
     while open_set:
         _, current = heapq.heappop(open_set)
@@ -39,15 +45,26 @@ def a_star(grid, start, goal):
         if current == goal:
             break
 
-        for n in neighbors(current, grid):
-            temp_g = g[current] + 1
-            if n not in g or temp_g < g[n]:
-                g[n] = temp_g
-                f = temp_g + heuristic(n, goal)
-                heapq.heappush(open_set, (f, n))
-                came_from[n] = current
+        x, y = current
+
+        for dx, dy in [(-1,0),(1,0),(0,-1),(0,1)]:
+            nx, ny = x + dx, y + dy
+
+            # ✅ FIXED BOUNDARY
+            if 0 <= nx < rows and 0 <= ny < cols:
+                if grid[nx, ny] == 0:
+
+                    temp_g = g[current] + 1
+
+                    if (nx, ny) not in g or temp_g < g[(nx, ny)]:
+                        g[(nx, ny)] = temp_g
+                        f = temp_g + heuristic((nx, ny), goal)
+
+                        heapq.heappush(open_set, (f, (nx, ny)))
+                        came_from[(nx, ny)] = current
 
     path = []
+
     if goal in came_from:
         node = goal
         while node != start:

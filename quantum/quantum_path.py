@@ -253,4 +253,33 @@ if example:
     plt.show()
 
 else:
-    print("No successful path found in any run.")
+    print("No successful path found")
+
+# ✅ Now outside
+def run_experiment():
+    logs = []
+    example = None
+
+    for run in range(NUM_RUNS):
+        grid = np.zeros((GRID_SIZE, GRID_SIZE))
+
+        for i in range(GRID_SIZE):
+            for j in range(GRID_SIZE):
+                if random.random() < OBSTACLE_PROB:
+                    grid[i, j] = 1
+
+        grid[START] = 0
+        grid[GOAL] = 0
+
+        path, explored = quantum_path(grid, START, GOAL)
+
+        logs.append({
+            "run_id": run,
+            "quantum_success": bool(path)
+        })
+
+    return logs
+
+
+if __name__ == "__main__":
+    run_experiment()

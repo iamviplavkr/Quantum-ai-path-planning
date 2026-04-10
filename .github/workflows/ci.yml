@@ -3,6 +3,7 @@ name: CI Pipeline
 on:
   push:
     branches: ["main"]
+  pull_request:
 
 jobs:
   build:
@@ -19,14 +20,10 @@ jobs:
 
     - name: Install Dependencies
       run: |
-        pip install --upgrade pip
-        pip install -r "LLM Explanation/requirements.txt"
-
-    - name: Run Algorithm Test
-      run: |
-        python classical/astar.py
+        python -m pip install --upgrade pip
+        pip install pytest
+        pip install numpy matplotlib qiskit qiskit-aer
 
     - name: Run Tests
       run: |
-        pip install pytest
-        pytest
+        pytest -v
